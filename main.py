@@ -1,9 +1,17 @@
 import pygame
+import requests
+from bs4 import BeautifulSoup
+import re
 
 def main():
 
-    game = GameEngine()
-    game.run()
+    # game = GameEngine()
+    # game.run()
+
+    artist = "".join(input("Enter artist: ").split(" ")).lower()
+    song = "".join(input("Enter song: ").split(" ")).lower()
+
+    song = Song(artist, song)
 
 class GameEngine:
     def __init__(self):
@@ -44,6 +52,31 @@ class GameEngine:
         font = pygame.font.SysFont(font, size)
         text = font.render(text, True, color)
         return text
+
+class Song:
+    def __init__(self, artist, song_name):
+        self.artist = artist
+        self.song_name = song_name
+        self.lyrics = self.get_lyrics()
+        print(" ".join(self.lyrics))
+    
+    def get_lyrics(self):
+        self.url = "https://www.azlyrics.com/lyrics/" + self.artist + "/" + self.song_name + ".html"
+        response = requests.get(self.url)
+
+        lyrics = ""
+
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "html.parser")
+            lyrics = soup.find_all("div", attrs={"class": lyrics, "id": None})
+            lyrics = re.sub(r'<[^<]+?>|[\[\]()"“”,!.?]', '', str(lyrics))
+            lyrics_array = lyrics.split()
+            return lyrics_array
+        else:
+            return f"Error {response.status_code}"
+
+    
+    
 
 if __name__ == "__main__":
     main()
