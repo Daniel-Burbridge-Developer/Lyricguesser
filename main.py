@@ -75,7 +75,7 @@ class Song:
         # TBH I don't think this line is doing anything
         lyrics = ""
 
-        # DO NOT TOUCH BELOW CODE, IT WORKS
+        # DO NOT TOUCH BELOW CODE, IT WORKS -- Oh it modifies the not-so-beutiful soup into usable data --
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
             lyrics_div = soup.find("div", attrs={"class": lyrics, "id": None})
@@ -98,7 +98,7 @@ class Song:
             return lyrics_array
         else:
             return f"Error {response.status_code}"
-        # DO NOT TOUCH ABOVE CODE, IT WORKS
+        # DO NOT TOUCH ABOVE CODE, IT WORKS -- Oh it modifies the not-so-beutiful soup into usable data --
     
     
 
