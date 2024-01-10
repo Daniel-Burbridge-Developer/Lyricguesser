@@ -17,7 +17,8 @@ def main():
         else:
             break
     print("\n")
-    print("\n".join(song.lyrics))
+    for line in song.lyrics:
+        print(" ".join(line))
 
 
 class GameEngine:
@@ -70,30 +71,39 @@ class Song:
         self.url = "https://www.azlyrics.com/lyrics/" + self.artist + "/" + self.song_name + ".html"
         response = requests.get(self.url)
 
+
+        # TBH I don't think this line is doing anything
         lyrics = ""
 
+        # DO NOT TOUCH BELOW CODE, IT WORKS
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
-            lyrics = soup.find("div", attrs={"class": lyrics, "id": None})
-            lines = lyrics.stripped_strings
-            lyricsmod = []
-            for line in lines:
+            lyrics_div = soup.find("div", attrs={"class": lyrics, "id": None})
+            lyrics_div_in_lines = lyrics_div.stripped_strings
+            lyrics_more_towards_text = []
+            for line in lyrics_div_in_lines:
                 if not line: 
                     continue
-                lyricsmod.append(line)
+                lyrics_more_towards_text.append(line)
 
-            newestlyrics = '\n'.join(lyricsmod)
+            lyrics_looking_like_lyrics = '\n'.join(lyrics_more_towards_text)
             
             pattern = r'\(([^)]*)\)'
-            modified_text = re.sub(pattern, r'\1', newestlyrics)
-            return (modified_text).split("\n")
+            lyrics_without_some_silly_symbols = re.sub(pattern, r'\1', lyrics_looking_like_lyrics)
+            lyrics_as_c_strings = lyrics_without_some_silly_symbols.split("\n")
+            lyrics_array = []
+            for line in lyrics_as_c_strings:
+                lyrics_array.append(str(line).split(" "))
+            
+            return lyrics_array
         else:
             return f"Error {response.status_code}"
- 
+        # DO NOT TOUCH ABOVE CODE, IT WORKS
     
     
 
 if __name__ == "__main__":
     main()
 
-#isalnum -- WILL BE USEFUL FOR REMOVING ALT CHARACTERS WHEN SELECTING SONG LINES FOR THE GAME, SINCE THEY WON'T BE FUN
+# "".isalnum() -- WILL BE USEFUL FOR REMOVING ALT CHARACTER LINES WHEN SELECTING SONG LINES FOR THE GAME, SINCE THEY WON'T BE FUN
+# OR MAYBE NOT COS OF COMMA'S AND STUFF -- SQUASH THIS BUG AT SOME POINT
