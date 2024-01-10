@@ -8,13 +8,17 @@ def main():
     # game = GameEngine()
     # game.run()
 
-    # artist = "".join(input("Enter artist: ").split(" ")).lower()
-    # song = "".join(input("Enter song: ").split(" ")).lower()
-    
-    artist="taylorswift"
-    song="22"
+    while True:
+        artist = "".join(input("Enter artist: ").split(" ")).lower()
+        song = "".join(input("Enter song: ").split(" ")).lower()
+        song = Song(artist, song)
+        if song.lyrics == "Error 404":
+            print("Sorry, couldn't find the song - Please select another")
+        else:
+            break
+    print("\n")
+    print("\n".join(song.lyrics))
 
-    song = Song(artist, song)
 
 class GameEngine:
     def __init__(self):
@@ -61,7 +65,6 @@ class Song:
         self.artist = artist
         self.song_name = song_name
         self.lyrics = self.get_lyrics()
-        print("\n".join(self.lyrics))
     
     def get_lyrics(self):
         self.url = "https://www.azlyrics.com/lyrics/" + self.artist + "/" + self.song_name + ".html"
