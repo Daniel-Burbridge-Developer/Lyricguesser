@@ -8,8 +8,11 @@ def main():
     # game = GameEngine()
     # game.run()
 
-    artist = "".join(input("Enter artist: ").split(" ")).lower()
-    song = "".join(input("Enter song: ").split(" ")).lower()
+    # artist = "".join(input("Enter artist: ").split(" ")).lower()
+    # song = "".join(input("Enter song: ").split(" ")).lower()
+    
+    artist="taylorswift"
+    song="22"
 
     song = Song(artist, song)
 
@@ -58,7 +61,7 @@ class Song:
         self.artist = artist
         self.song_name = song_name
         self.lyrics = self.get_lyrics()
-        print(" ".join(self.lyrics))
+        print("\n".join(self.lyrics))
     
     def get_lyrics(self):
         self.url = "https://www.azlyrics.com/lyrics/" + self.artist + "/" + self.song_name + ".html"
@@ -68,15 +71,26 @@ class Song:
 
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
-            lyrics = soup.find_all("div", attrs={"class": lyrics, "id": None})
-            lyrics = re.sub(r'<[^<]+?>|[\[\]()"“”,!.?]', '', str(lyrics))
-            lyrics_array = lyrics.split()
-            return lyrics_array
+            lyrics = soup.find("div", attrs={"class": lyrics, "id": None})
+            lines = lyrics.stripped_strings
+            lyricsmod = []
+            for line in lines:
+                if not line: 
+                    continue
+                lyricsmod.append(line)
+
+            newestlyrics = '\n'.join(lyricsmod)
+            
+            pattern = r'\(([^)]*)\)'
+            modified_text = re.sub(pattern, r'\1', newestlyrics)
+            return (modified_text).split("\n")
         else:
             return f"Error {response.status_code}"
-
+ 
     
     
 
 if __name__ == "__main__":
     main()
+
+#isalnum -- WILL BE USEFUL FOR REMOVING ALT CHARACTERS WHEN SELECTING SONG LINES FOR THE GAME, SINCE THEY WON'T BE FUN
