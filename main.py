@@ -14,79 +14,89 @@ def run_game():
     pygame.init()
     width, height = 1280, 720
     screen = pygame.display.set_mode((width, height))
-    clock = pygame.time.Clock()
     pygame.display.set_caption("Guess The Lyrics")
-    running = True
-    user_input = ""
-    font_for_user_input = pygame.font.Font(None, 32)
-    text_remover_rect = pygame.Rect(0, height - 100, width, 100)
-    artist_selected = False
-    song_selected = False
-    artist = ""
-    song = ""
-    game_running = False
-    
-    while running:
-        
-        if artist_selected == False and user_input == "":
-            draw_text(screen, font_for_user_input, "Enter Artist: ", width / 2 - 100, height - 100, "white")
-        elif song_selected == False and user_input == "":
-            draw_text(screen, font_for_user_input, "Enter Song: ", width / 2 - 100, height - 100, "white")
-
+    clock = pygame.time.Clock()
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
                 pygame.quit()
                 raise SystemExit
             
-            if event.type == pygame.KEYDOWN:
-                if user_input == "":
-                    pygame.draw.rect(screen, "black", text_remover_rect)
+        running = True
+        user_input = ""
+        font_for_user_input = pygame.font.Font(None, 32)
+        text_remover_rect = pygame.Rect(0, height - 100, width, 100)
+        artist_selected = False
+        song_selected = False
+        artist = ""
+        song = ""
+        game_running = False
+        
+        while running:
+            
+            if artist_selected == False and user_input == "":
+                draw_text(screen, font_for_user_input, "Enter Artist: ", width / 2 - 100, height - 100, "white")
+            elif song_selected == False and user_input == "":
+                draw_text(screen, font_for_user_input, "Enter Song: ", width / 2 - 100, height - 100, "white")
 
-                if event.key == pygame.K_RETURN:
-                    if song_selected == False or artist_selected == False:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    pygame.quit()
+                    raise SystemExit
+                
+                if event.type == pygame.KEYDOWN:
+                    if user_input == "":
                         pygame.draw.rect(screen, "black", text_remover_rect)
-                        if artist_selected == False:
-                            artist = "".join(user_input.split(" ")).lower()
-                            artist_selected = True
-                            user_input = ""
 
-                        elif song_selected == False:
-                            song = "".join(user_input.split(" ")).lower()
-                            song_selected = True
-
+                    if event.key == pygame.K_RETURN:
+                        if song_selected == False or artist_selected == False:
                             pygame.draw.rect(screen, "black", text_remover_rect)
-                            draw_text(screen, font_for_user_input, "Searching for song....", width / 2 - 100, height - 100, "white")
-                            pygame.display.flip()
+                            if artist_selected == False:
+                                artist = "".join(user_input.split(" ")).lower()
+                                artist_selected = True
+                                user_input = ""
 
-                            song = Song(artist, song)
+                            elif song_selected == False:
+                                song = "".join(user_input.split(" ")).lower()
+                                song_selected = True
 
-                            if song.lyrics == "Error 404":
                                 pygame.draw.rect(screen, "black", text_remover_rect)
-                                draw_text(screen, font_for_user_input, "Sorry, couldn't find the song - Please select another", width / 2 - 200, height - 100, "white")
+                                draw_text(screen, font_for_user_input, "Searching for song....", width / 2 - 100, height - 100, "white")
                                 pygame.display.flip()
-                                pygame.time.wait(5000)
-                                pygame.draw.rect(screen, "black", text_remover_rect)
-                                artist_selected = False
-                                song_selected = False
-                                user_input =""
-                                continue
-                            else:
-                                pygame.draw.rect(screen, "black", text_remover_rect)
-                                draw_text(screen, font_for_user_input, f"Song found!      Artist: {song.artist}      Song: {song.song_name}", width / 2 - 250, height - 100, "white")
-                                pygame.display.flip()
-                                pygame.time.wait(5000)
-                                running = False
-                                game_running = True
-                elif event.key == pygame.K_BACKSPACE:
-                    if user_input != "":
-                        user_input = ""
-                        pygame.draw.rect(screen, "black", text_remover_rect)
 
-                else:
-                    print("key pressed")
-                    user_input += event.unicode
-                    draw_text(screen, font_for_user_input, user_input, width / 2 - 100, height - 100, "white")
+                                song = Song(artist, song)
+
+                                if song.lyrics == "Error 404":
+                                    pygame.draw.rect(screen, "black", text_remover_rect)
+                                    draw_text(screen, font_for_user_input, "Sorry, couldn't find the song - Please select another", width / 2 - 200, height - 100, "white")
+                                    pygame.display.flip()
+                                    pygame.time.wait(5000)
+                                    pygame.draw.rect(screen, "black", text_remover_rect)
+                                    artist_selected = False
+                                    song_selected = False
+                                    user_input =""
+                                    continue
+                                else:
+                                    pygame.draw.rect(screen, "black", text_remover_rect)
+                                    draw_text(screen, font_for_user_input, f"Song found!      Artist: {song.artist}      Song: {song.song_name}", width / 2 - 250, height - 100, "white")
+                                    pygame.display.flip()
+                                    pygame.time.wait(5000)
+                                    running = False
+                                    game_running = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        if user_input != "":
+                            user_input = ""
+                            pygame.draw.rect(screen, "black", text_remover_rect)
+
+                    else:
+                        print("key pressed")
+                        user_input += event.unicode
+                        draw_text(screen, font_for_user_input, user_input, width / 2 - 100, height - 100, "white")
+            
+            render_game(screen)
+            pygame.display.flip()
+            clock.tick(60)
 
         selected_lyrics = (random.choice(song.lyrics))
         amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
@@ -101,33 +111,61 @@ def run_game():
         for index in indexs_to_replace:
             selected_lyrics[index] = "-" * len(selected_lyrics[index])
 
+        initial_display = False
+        guess_input = ""
+        guess = ""
+
         while game_running:
-            print("entering game state")
+
+            if len(indexs_to_replace) == 0:
+                game_running = False
+                running = True
+                pygame.draw.rect(screen, "black", text_remover_rect)
+                draw_text(screen, font_for_user_input, "You won!", width / 2 - 100, height - 100, "white")
+                pygame.display.flip()
+                pygame.time.wait(5000)
+                pygame.draw.rect(screen, "black", text_remover_rect)
+
+            if initial_display == False:
+                pygame.draw.rect(screen, "black", text_remover_rect)
+                draw_text(screen, font_for_user_input, " ".join(selected_lyrics), width / 2 - 100, height - 100, "white")
+                pygame.display.flip()
+                initial_display = True
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
                     raise SystemExit
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        guess = guess_input.lower()
+                        guess_input = ""
+                        print(guess)
+                        if guess in indexs_to_replace.values():
+                            replace_index = None
+                            for index in indexs_to_replace:
+                                if indexs_to_replace[index] == guess:
+                                    selected_lyrics[index] = guess
+                                    replace_index = index
+                                    break
+                            indexs_to_replace.pop(replace_index)
+                            pygame.draw.rect(screen, "black", text_remover_rect)
+                            draw_text(screen, font_for_user_input, " ".join(selected_lyrics), width / 2 - 100, height - 100, "white")
+                            pygame.display.flip()
+                
+                    elif event.key == pygame.K_BACKSPACE:
+                        if guess_input != "":
+                            guess_input = ""
 
-# while True:
-    #     if len(indexs_to_replace) == 0:
-    #         break
-    #     print(" ".join(selected_lyrics))
-    #     print(indexs_to_replace)
-    #     guess = input("Enter guess: ").lower()
-    #     if guess in indexs_to_replace.values():
-    #         replace_index = None
-    #         for index in indexs_to_replace:
-    #             if indexs_to_replace[index] == guess:
-    #                 selected_lyrics[index] = guess
-    #                 replace_index = index
-    #                 break
-    #         indexs_to_replace.pop(replace_index)
+                    else:
+                        guess_input += event.unicode
+                        guess = guess_input.lower()
 
-        render_game(screen)
-        pygame.display.flip()
-        clock.tick(60)
+            render_game(screen)
+            pygame.display.flip()
+            clock.tick(60)
 
 def draw_text(screen, font, text, x, y, color):
     text_surface = font.render(text, True, color)
