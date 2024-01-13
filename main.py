@@ -7,8 +7,8 @@ import math
 
 def main():
 
-    # game = GameEngine()
-    # game.run()
+    game = GameEngine()
+    game.run()
     
 
     while True:
@@ -88,7 +88,7 @@ class GameEngine:
     def render(self):
         self.screen.fill("white")
         self.screen.blit(self.background, (0, 0))
-        text = self.create_text("Taylor Swift Lyric Guesser", ("gold"), "Arial", 72)
+        text = self.create_text("Lyric Guesser", ("gold"), "Arial", 72)
         text_rect = text.get_rect(center=(self.width // 2 + 50, self.height - self.height + 100))
         self.screen.blit(text, text_rect)
         pygame.display.flip()
@@ -104,6 +104,8 @@ class Song:
         self.song_name = song_name
         self.lyrics = self.get_lyrics()
     
+
+    # This took a fair few hours - but don't modify it, it's working well enough now. just leave it as it.
     def get_lyrics(self):
         self.url = "https://www.azlyrics.com/lyrics/" + self.artist + "/" + self.song_name + ".html"
         response = requests.get(self.url)
@@ -136,6 +138,7 @@ class Song:
         else:
             return f"Error {response.status_code}"
         # DO NOT TOUCH ABOVE CODE, IT WORKS -- Oh it modifies the not-so-beutiful soup into usable data --
+    # This took a fair few hours - but don't modify it, it's working well enough now. just leave it as it.
     
     
 
