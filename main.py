@@ -4,99 +4,85 @@ from bs4 import BeautifulSoup
 import re
 import random
 import math
+import os
 
 def main():
 
-    game = GameEngine()
-    game.run()
+    run_game()
     
+    # while True:
+    #     artist = "".join(input("Enter artist: ").split(" ")).lower()
+    #     song = "".join(input("Enter song: ").split(" ")).lower()
+    #     song = Song(artist, song)
+    #     if song.lyrics == "Error 404":
+    #         print("Sorry, couldn't find the song - Please select another")
+    #     else:
+    #         break
+    # print("\n")
 
-    while True:
-        artist = "".join(input("Enter artist: ").split(" ")).lower()
-        song = "".join(input("Enter song: ").split(" ")).lower()
-        song = Song(artist, song)
-        if song.lyrics == "Error 404":
-            print("Sorry, couldn't find the song - Please select another")
-        else:
-            break
-    print("\n")
+    # random.choice(song.lyrics)
+    # selected_lyrics = (random.choice(song.lyrics))
+    # amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
 
-    random.choice(song.lyrics)
-    selected_lyrics = (random.choice(song.lyrics))
-    amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
+    # indexs_to_replace = {}
 
-    indexs_to_replace = {}
+    # while len(indexs_to_replace) < amount_of_lyris_to_replace:
+    #     index = random.randint(0, len(selected_lyrics) - 1)
+    #     if index not in indexs_to_replace:
+    #         indexs_to_replace[index] = selected_lyrics[index].lower()
 
-    while len(indexs_to_replace) < amount_of_lyris_to_replace:
-        index = random.randint(0, len(selected_lyrics) - 1)
-        if index not in indexs_to_replace:
-            indexs_to_replace[index] = selected_lyrics[index].lower()
+    # for index in indexs_to_replace:
+    #     selected_lyrics[index] = "_" * len(selected_lyrics[index])
 
-    for index in indexs_to_replace:
-        selected_lyrics[index] = "_" * len(selected_lyrics[index])
+    # while True:
+    #     if len(indexs_to_replace) == 0:
+    #         break
+    #     print(" ".join(selected_lyrics))
+    #     print(indexs_to_replace)
+    #     guess = input("Enter guess: ").lower()
+    #     if guess in indexs_to_replace.values():
+    #         replace_index = None
+    #         for index in indexs_to_replace:
+    #             if indexs_to_replace[index] == guess:
+    #                 selected_lyrics[index] = guess
+    #                 replace_index = index
+    #                 break
+    #         indexs_to_replace.pop(replace_index)
 
-    while True:
-        if len(indexs_to_replace) == 0:
-            break
-        print(" ".join(selected_lyrics))
-        print(indexs_to_replace)
-        guess = input("Enter guess: ").lower()
-        if guess in indexs_to_replace.values():
-            replace_index = None
-            for index in indexs_to_replace:
-                if indexs_to_replace[index] == guess:
-                    selected_lyrics[index] = guess
-                    replace_index = index
-                    break
-            indexs_to_replace.pop(replace_index)
-            
-                
+def run_game():
+    pygame.init()
+    screen = pygame.display.set_mode((1280, 720))
+    clock = pygame.time.Clock()
+    running = True
 
-    
-
-
-
-
-
-class GameEngine:
-    def __init__(self):
-        pygame.init()
-        self.width = 1280
-        self.height = 720
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        self.clock = pygame.time.Clock()
-        self.running = True
-        pygame.display.set_caption("Lyric Guesser")
-        self.background = pygame.image.load("Images/TS_Eras_Tour.jpg")
-
-    def run(self):
-        while self.running:
-            self.handle_events()
-            self.update()
-            self.render()
-            self.clock.tick(60)
-        pygame.quit()
-
-    def handle_events(self):
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                running = False
+                pygame.quit()
+                raise SystemExit
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    print("Enter Key Pressed!")
 
-    def update(self):
-        pass
 
-    def render(self):
-        self.screen.fill("white")
-        self.screen.blit(self.background, (0, 0))
-        text = self.create_text("Lyric Guesser", ("gold"), "Arial", 72)
-        text_rect = text.get_rect(center=(self.width // 2 + 50, self.height - self.height + 100))
-        self.screen.blit(text, text_rect)
+        render_game(screen)
+        calc_logic()
         pygame.display.flip()
+        clock.tick(60)
 
-    def create_text(self, text, color, font, size):
-        font = pygame.font.SysFont(font, size)
-        text = font.render(text, True, color)
-        return text
+def render_game(screen):
+    TS_Background = pygame.image.load(os.path.join('Images', 'TS_Eras_Tour.jpg')).convert()
+    screen.blit(TS_Background, (0, 0))
+    # pygame.TEXTINPUT = "Enter Guess"
+
+def calc_logic():
+    pass
+    
+
+            
+
 
 class Song:
     def __init__(self, artist, song_name):
