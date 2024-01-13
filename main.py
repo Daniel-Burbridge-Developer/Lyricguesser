@@ -9,32 +9,108 @@ import os
 def main():
 
     run_game()
+
+def run_game():
+    pygame.init()
+    width, height = 1280, 720
+    screen = pygame.display.set_mode((width, height))
+    clock = pygame.time.Clock()
+    pygame.display.set_caption("Guess The Lyrics")
+    running = True
+    user_input = ""
+    font_for_user_input = pygame.font.Font(None, 32)
+    text_remover_rect = pygame.Rect(0, height - 100, width, 100)
+    artist_selected = False
+    song_selected = False
+    artist = ""
+    song = ""
+    game_running = False
     
-    # while True:
-    #     artist = "".join(input("Enter artist: ").split(" ")).lower()
-    #     song = "".join(input("Enter song: ").split(" ")).lower()
-    #     song = Song(artist, song)
-    #     if song.lyrics == "Error 404":
-    #         print("Sorry, couldn't find the song - Please select another")
-    #     else:
-    #         break
-    # print("\n")
+    while running:
+        
+        if artist_selected == False and user_input == "":
+            draw_text(screen, font_for_user_input, "Enter Artist: ", width / 2 - 100, height - 100, "white")
+        elif song_selected == False and user_input == "":
+            draw_text(screen, font_for_user_input, "Enter Song: ", width / 2 - 100, height - 100, "white")
 
-    # random.choice(song.lyrics)
-    # selected_lyrics = (random.choice(song.lyrics))
-    # amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                raise SystemExit
+            
+            if event.type == pygame.KEYDOWN:
+                if user_input == "":
+                    pygame.draw.rect(screen, "black", text_remover_rect)
 
-    # indexs_to_replace = {}
+                if event.key == pygame.K_RETURN:
+                    if song_selected == False or artist_selected == False:
+                        pygame.draw.rect(screen, "black", text_remover_rect)
+                        if artist_selected == False:
+                            artist = "".join(user_input.split(" ")).lower()
+                            artist_selected = True
+                            user_input = ""
 
-    # while len(indexs_to_replace) < amount_of_lyris_to_replace:
-    #     index = random.randint(0, len(selected_lyrics) - 1)
-    #     if index not in indexs_to_replace:
-    #         indexs_to_replace[index] = selected_lyrics[index].lower()
+                        elif song_selected == False:
+                            song = "".join(user_input.split(" ")).lower()
+                            song_selected = True
 
-    # for index in indexs_to_replace:
-    #     selected_lyrics[index] = "_" * len(selected_lyrics[index])
+                            pygame.draw.rect(screen, "black", text_remover_rect)
+                            draw_text(screen, font_for_user_input, "Searching for song....", width / 2 - 100, height - 100, "white")
+                            pygame.display.flip()
 
-    # while True:
+                            song = Song(artist, song)
+
+                            if song.lyrics == "Error 404":
+                                pygame.draw.rect(screen, "black", text_remover_rect)
+                                draw_text(screen, font_for_user_input, "Sorry, couldn't find the song - Please select another", width / 2 - 200, height - 100, "white")
+                                pygame.display.flip()
+                                pygame.time.wait(5000)
+                                pygame.draw.rect(screen, "black", text_remover_rect)
+                                artist_selected = False
+                                song_selected = False
+                                user_input =""
+                                continue
+                            else:
+                                pygame.draw.rect(screen, "black", text_remover_rect)
+                                draw_text(screen, font_for_user_input, f"Song found!      Artist: {song.artist}      Song: {song.song_name}", width / 2 - 250, height - 100, "white")
+                                pygame.display.flip()
+                                pygame.time.wait(5000)
+                                running = False
+                                game_running = True
+                elif event.key == pygame.K_BACKSPACE:
+                    if user_input != "":
+                        user_input = ""
+                        pygame.draw.rect(screen, "black", text_remover_rect)
+
+                else:
+                    print("key pressed")
+                    user_input += event.unicode
+                    draw_text(screen, font_for_user_input, user_input, width / 2 - 100, height - 100, "white")
+
+        selected_lyrics = (random.choice(song.lyrics))
+        amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
+
+        indexs_to_replace = {}
+
+        while len(indexs_to_replace) < amount_of_lyris_to_replace:
+            index = random.randint(0, len(selected_lyrics) - 1)
+            if index not in indexs_to_replace:
+                indexs_to_replace[index] = selected_lyrics[index].lower()
+
+        for index in indexs_to_replace:
+            selected_lyrics[index] = "-" * len(selected_lyrics[index])
+
+        while game_running:
+            print("entering game state")
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    pygame.quit()
+                    raise SystemExit
+
+# while True:
     #     if len(indexs_to_replace) == 0:
     #         break
     #     print(" ".join(selected_lyrics))
@@ -49,40 +125,19 @@ def main():
     #                 break
     #         indexs_to_replace.pop(replace_index)
 
-def run_game():
-    pygame.init()
-    screen = pygame.display.set_mode((1280, 720))
-    clock = pygame.time.Clock()
-    running = True
-
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                pygame.quit()
-                raise SystemExit
-            
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    print("Enter Key Pressed!")
-
-
         render_game(screen)
-        calc_logic()
         pygame.display.flip()
         clock.tick(60)
+
+def draw_text(screen, font, text, x, y, color):
+    text_surface = font.render(text, True, color)
+    screen.blit(text_surface, (x, y))
 
 def render_game(screen):
     TS_Background = pygame.image.load(os.path.join('Images', 'TS_Eras_Tour.jpg')).convert()
     screen.blit(TS_Background, (0, 0))
-    # pygame.TEXTINPUT = "Enter Guess"
-
-def calc_logic():
-    pass
-    
-
-            
-
+    pygame.TEXTINPUT = "Guess The Lyrics"
+    pygame.display.flip()
 
 class Song:
     def __init__(self, artist, song_name):
@@ -90,17 +145,13 @@ class Song:
         self.song_name = song_name
         self.lyrics = self.get_lyrics()
     
-
-    # This took a fair few hours - but don't modify it, it's working well enough now. just leave it as it.
     def get_lyrics(self):
         self.url = "https://www.azlyrics.com/lyrics/" + self.artist + "/" + self.song_name + ".html"
         response = requests.get(self.url)
 
-
-        # TBH I don't think this line is doing anything
+    # DO NOT MODIFY THE BELOW CODE
+        # I think this line does nothing, but I'm not modifying this code
         lyrics = ""
-
-        # DO NOT TOUCH BELOW CODE, IT WORKS -- Oh it modifies the not-so-beutiful soup into usable data --
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
             lyrics_div = soup.find("div", attrs={"class": lyrics, "id": None})
@@ -123,14 +174,7 @@ class Song:
             return lyrics_array
         else:
             return f"Error {response.status_code}"
-        # DO NOT TOUCH ABOVE CODE, IT WORKS -- Oh it modifies the not-so-beutiful soup into usable data --
-    # This took a fair few hours - but don't modify it, it's working well enough now. just leave it as it.
+    # DO NOT MODIFY THE ABOVE CODE
     
-    
-
 if __name__ == "__main__":
     main()
-
-# "".isalnum() -- WILL BE USEFUL FOR REMOVING ALT CHARACTER LINES WHEN SELECTING SONG LINES FOR THE GAME, SINCE THEY WON'T BE FUN
-# OR MAYBE NOT COS OF COMMA'S AND STUFF -- SQUASH THIS BUG AT SOME POINT
-# I broke git, trying to fix it now
