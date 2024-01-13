@@ -21,29 +21,36 @@ def main():
             break
     print("\n")
 
-    # for line in song.lyrics:
-    #     print(" ".join(line))
+    random.choice(song.lyrics)
+    selected_lyrics = (random.choice(song.lyrics))
+    amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
 
-    ##TODO: SELECT A LINE AND REMOVE WORDS BUT SAVE WHAT THEY WERE FOR GUESSING
-    
-    for i in range(10):
-        random.choice(song.lyrics)
-        selected_lyrics = (random.choice(song.lyrics))
-        amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
+    indexs_to_replace = {}
 
-        # print(selected_lyrics)
-        # print(amount_of_lyris_to_replace)
-        indexs_to_replace = {}
+    while len(indexs_to_replace) < amount_of_lyris_to_replace:
+        index = random.randint(0, len(selected_lyrics) - 1)
+        if index not in indexs_to_replace:
+            indexs_to_replace[index] = selected_lyrics[index].lower()
 
-        while len(indexs_to_replace) < amount_of_lyris_to_replace:
-            index = random.randint(0, len(selected_lyrics) - 1)
-            if index not in indexs_to_replace:
-                indexs_to_replace[index] = selected_lyrics[index]
+    for index in indexs_to_replace:
+        selected_lyrics[index] = "_" * len(selected_lyrics[index])
 
-        for index in indexs_to_replace:
-            selected_lyrics[index] = "_" * len(selected_lyrics[index])
-
+    while True:
+        if len(indexs_to_replace) == 0:
+            break
         print(" ".join(selected_lyrics))
+        print(indexs_to_replace)
+        guess = input("Enter guess: ").lower()
+        if guess in indexs_to_replace.values():
+            replace_index = None
+            for index in indexs_to_replace:
+                if indexs_to_replace[index] == guess:
+                    selected_lyrics[index] = guess
+                    replace_index = index
+                    break
+            indexs_to_replace.pop(replace_index)
+            
+                
 
     
 
