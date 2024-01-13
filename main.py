@@ -7,6 +7,7 @@ def main():
 
     # game = GameEngine()
     # game.run()
+    
 
     while True:
         artist = "".join(input("Enter artist: ").split(" ")).lower()
@@ -19,6 +20,8 @@ def main():
     print("\n")
     for line in song.lyrics:
         print(" ".join(line))
+
+    ##TODO: SELECT A LINE AND REMOVE WORDS BUT SAVE WHAT THEY WERE FOR GUESSING=
 
 
 class GameEngine:
@@ -107,3 +110,7 @@ if __name__ == "__main__":
 
 # "".isalnum() -- WILL BE USEFUL FOR REMOVING ALT CHARACTER LINES WHEN SELECTING SONG LINES FOR THE GAME, SINCE THEY WON'T BE FUN
 # OR MAYBE NOT COS OF COMMA'S AND STUFF -- SQUASH THIS BUG AT SOME POINT
+    
+
+
+    
