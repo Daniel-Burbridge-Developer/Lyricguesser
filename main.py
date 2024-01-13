@@ -2,6 +2,8 @@ import pygame
 import requests
 from bs4 import BeautifulSoup
 import re
+import random
+import math
 
 def main():
 
@@ -18,10 +20,35 @@ def main():
         else:
             break
     print("\n")
-    for line in song.lyrics:
-        print(" ".join(line))
 
-    ##TODO: SELECT A LINE AND REMOVE WORDS BUT SAVE WHAT THEY WERE FOR GUESSING=
+    # for line in song.lyrics:
+    #     print(" ".join(line))
+
+    ##TODO: SELECT A LINE AND REMOVE WORDS BUT SAVE WHAT THEY WERE FOR GUESSING
+    
+    for i in range(10):
+        random.choice(song.lyrics)
+        selected_lyrics = (random.choice(song.lyrics))
+        amount_of_lyris_to_replace = math.ceil(len(selected_lyrics) / 3.3)
+
+        # print(selected_lyrics)
+        # print(amount_of_lyris_to_replace)
+        indexs_to_replace = {}
+
+        while len(indexs_to_replace) < amount_of_lyris_to_replace:
+            index = random.randint(0, len(selected_lyrics) - 1)
+            if index not in indexs_to_replace:
+                indexs_to_replace[index] = selected_lyrics[index]
+
+        for index in indexs_to_replace:
+            selected_lyrics[index] = "_" * len(selected_lyrics[index])
+
+        print(" ".join(selected_lyrics))
+
+    
+
+
+
 
 
 class GameEngine:
